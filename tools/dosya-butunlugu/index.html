@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dosya Bütünlüğü — Siber Araç Kutusu</title>
+<meta name="description" content="Dosyaların SHA-256 özetini alıp önceki anlık görüntüyle karşılaştırır. Dosyalar cihazdan çıkmaz.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/app.css">
+</head>
+<body>
+
+<header class="ust">
+  <div class="ust-ic">
+    <a href="../../">Siber Araç Kutusu</a>
+    <span class="ust-yol">Dosya Bütünlüğü</span>
+  </div>
+</header>
+
+<main class="kabuk arac-duzen">
+
+  <section class="aciklama">
+    <h1>Dosya Bütünlüğü</h1>
+    <p>
+      Seçtiğin dosyaların SHA-256 özetini hesaplar. Bu özetleri bir dosyaya kaydedip
+      sonra tekrar yüklediğinde, aradan geçen sürede hangi dosyanın değiştiğini,
+      hangisinin eklendiğini ve hangisinin silindiğini söyler.
+    </p>
+
+    <h3>Özet neden işe yarıyor</h3>
+    <p>
+      SHA-256, girdi ne kadar büyük olursa olsun 64 haneli sabit bir çıktı üretir. Dosyanın
+      tek bir bitini değiştirsen çıktı tamamen başkalaşır. Tersini yapmak, yani istenen
+      özeti verecek bir dosya üretmek pratikte mümkün değildir. Bu yüzden özet, dosyanın
+      parmak izi gibi kullanılır.
+    </p>
+
+    <h3>Ne işe yarar</h3>
+    <ul>
+      <li>İndirdiğin bir kurulum dosyasının, sitede yazan özetle aynı olduğunu doğrulamak.</li>
+      <li>Bir klasördeki yapılandırma dosyalarının habersiz değiştirilip değiştirilmediğini izlemek.</li>
+      <li>İki kopyanın gerçekten birebir aynı olduğundan emin olmak.</li>
+    </ul>
+
+    <h3>Arkada ne dönüyor</h3>
+    <p>
+      Dosyalar 4 MB'lık parçalar hâlinde okunuyor ve her parça hash motoruna besleniyor.
+      Bu yüzden gigabaytlık bir dosya bile belleği doldurmuyor ve ilerleme çubuğu
+      gerçek ilerlemeyi gösteriyor. Hesaplama, projeye ait saf JavaScript SHA-256
+      uygulamasıyla yapılıyor.
+    </p>
+
+    <h3>Sınırları</h3>
+    <ul>
+      <li>Tarayıcı klasörleri kendi başına izleyemez; karşılaştırmayı sen başlatırsın.</li>
+      <li>Kaydettiğin anlık görüntü dosyası imzalı değildir. Saldırgan hem dosyayı hem görüntüyü değiştirebilirse karşılaştırma anlamını yitirir; görüntüyü ayrı bir yerde sakla.</li>
+      <li>Özet, dosyanın içeriğini doğrular — güvenli olduğunu değil.</li>
+    </ul>
+  </section>
+
+  <section>
+    <div class="panel">
+      <h2>Dosyaları seç</h2>
+      <div class="birakma-alani" id="birakma" tabindex="0" role="button"
+           aria-label="Dosya seçmek için tıkla veya dosyaları buraya bırak">
+        <p>Dosyaları buraya bırak ya da seçmek için tıkla</p>
+      </div>
+      <input type="file" id="dosya-girdi" multiple class="gizli">
+
+      <div class="ilerleme gizli" id="ilerleme"><i></i></div>
+      <p id="durum-yazi" class="gizli"></p>
+
+      <table class="dosya-tablo gizli" id="tablo">
+        <thead>
+          <tr><th>Dosya</th><th>SHA-256</th><th>Durum</th></tr>
+        </thead>
+        <tbody id="tablo-govde"></tbody>
+      </table>
+
+      <div class="dugme-sirasi">
+        <button type="button" id="kaydet-btn" disabled>Anlık görüntüyü indir</button>
+        <button type="button" class="ikincil" id="karsilastir-btn">Görüntü yükleyip karşılaştır</button>
+        <button type="button" class="ikincil" id="temizle-btn" disabled>Listeyi temizle</button>
+      </div>
+      <input type="file" id="goruntu-girdi" accept="application/json,.json" class="gizli">
+    </div>
+
+    <div class="panel">
+      <h2>Tek özet karşılaştır</h2>
+      <p>Bir siteden aldığın özeti buraya yapıştır, yukarıda hesaplanan özetlerle eşleşip eşleşmediğini söylesin.</p>
+      <label for="beklenen">Beklenen SHA-256</label>
+      <textarea id="beklenen" spellcheck="false" placeholder="64 haneli onaltılık değer"></textarea>
+      <ul class="not-listesi gizli" id="esleme-sonuc"></ul>
+    </div>
+  </section>
+
+</main>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>

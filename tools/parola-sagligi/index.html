@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Parola Sağlığı — Siber Araç Kutusu</title>
+<meta name="description" content="Parola entropisi, tahmin edilebilir kalıplar ve sızıntı kontrolü — tamamı tarayıcıda.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/app.css">
+</head>
+<body>
+
+<header class="ust">
+  <div class="ust-ic">
+    <a href="../../">Siber Araç Kutusu</a>
+    <span class="ust-yol">Parola Sağlığı</span>
+  </div>
+</header>
+
+<main class="kabuk arac-duzen">
+
+  <section class="aciklama">
+    <h1>Parola Sağlığı</h1>
+    <p>
+      Bir parolanın gerçekte ne kadar dayanıklı olduğunu ölçer: kaç bit entropi taşıyor,
+      içinde kırma araçlarının önce denediği kalıplar var mı ve bilinen veri sızıntılarında
+      geçmiş mi.
+    </p>
+
+    <h3>Entropi ne demek</h3>
+    <p>
+      Entropi, bir saldırganın parolayı bulana kadar kaç tahmin yapması gerektiğinin ikilik
+      tabandaki karşılığı. 40 bit, kabaca bin milyar tahmin demek — kulağa çok geliyor ama
+      elindeki ekran kartıyla saniyede on milyar deneme yapan birine göre bir dakikadan kısa.
+      Her fazladan bit, gereken süreyi ikiye katlıyor.
+    </p>
+
+    <h3>Neden uzunluk karmaşıklıktan önemli</h3>
+    <p>
+      Parolaya bir karakter eklemek entropiyi alfabenin logaritması kadar artırır; alfabeyi
+      genişletmek ise sadece o logaritmayı büyütür. Yani <span class="hash">Kk8!x</span>
+      yerine dört kelimelik bir cümle kullanmak hem akılda kalır hem çok daha güçlüdür.
+    </p>
+
+    <h3>Sözlük tuzağı</h3>
+    <p>
+      Sadece karakter çeşitliliğine bakan hesaplar yanıltıcıdır. "Galatasaray1907" on beş
+      karakter ve üç farklı karakter kümesi içerir, kâğıt üzerinde çok güçlü görünür. Oysa
+      saldırgan harfleri tek tek denemez, kelime listesini dener. Bu araç bilinen bir kelime
+      yakaladığında onu tek bir tahmin birimi sayar ve puanı buna göre düşürür.
+    </p>
+
+    <h3>Sızıntı kontrolü nasıl çalışıyor</h3>
+    <p>
+      Have I Been Pwned servisinin k-anonimlik yöntemi kullanılıyor. Parolanın SHA-1 özeti
+      tarayıcında hesaplanıyor, bu özetin yalnızca <em>ilk beş hanesi</em> gönderiliyor.
+      Servis o beş haneyle başlayan yüzlerce özeti geri yolluyor, eşleşme aramasını senin
+      tarayıcın yapıyor. Parolanın kendisi de tam özeti de cihazından çıkmıyor.
+    </p>
+
+    <h3>Sınırları</h3>
+    <ul>
+      <li>Kırılma süresi bir tahmindir; saldırganın donanımına ve parolanın nasıl saklandığına göre değişir.</li>
+      <li>Çevrimdışı senaryo, hızlı bir özet fonksiyonuyla saklanmış parolaları varsayar. bcrypt veya Argon2 kullanan bir sistemde süreler çok daha uzundur.</li>
+      <li>Gömülü kelime listesi kısadır; asıl geniş kontrolü sızıntı sorgusu yapar.</li>
+    </ul>
+  </section>
+
+  <section>
+    <div class="panel">
+      <label for="parola">Parolayı yaz</label>
+      <input type="password" id="parola" autocomplete="off" autocapitalize="off"
+             spellcheck="false" placeholder="buraya yazdıkça ölçülür">
+
+      <div class="secenekler">
+        <label><input type="checkbox" id="goster"> Parolayı göster</label>
+      </div>
+
+      <div class="olcer" id="olcer" data-seviye="-1" role="img" aria-label="Parola gücü ölçeri">
+        <span></span><span></span><span></span><span></span><span></span>
+      </div>
+
+      <div class="olcer-yazi">
+        <strong id="seviye-adi">parola bekleniyor</strong>
+        <span id="bit-yazi"></span>
+      </div>
+
+      <dl class="veri-listesi" id="detay"></dl>
+      <ul class="not-listesi" id="notlar"></ul>
+
+      <div class="dugme-sirasi">
+        <button type="button" id="sizinti-btn" disabled>Sızıntılarda ara</button>
+      </div>
+      <ul class="not-listesi gizli" id="sizinti-sonuc"></ul>
+    </div>
+
+    <div class="panel">
+      <h2>Güçlü parola üret</h2>
+      <p>Tarayıcının kriptografik rastgele sayı üreteciyle oluşturulur, hiçbir yere kaydedilmez.</p>
+
+      <label for="uzunluk">Uzunluk: <span id="uzunluk-yazi">20</span> karakter</label>
+      <input type="range" id="uzunluk" min="8" max="48" value="20">
+
+      <div class="secenekler">
+        <label><input type="checkbox" id="k-buyuk" checked> Büyük harf</label>
+        <label><input type="checkbox" id="k-rakam" checked> Rakam</label>
+        <label><input type="checkbox" id="k-sembol" checked> Sembol</label>
+      </div>
+
+      <div class="dugme-sirasi">
+        <button type="button" id="uret-btn">Parola üret</button>
+        <button type="button" class="ikincil" id="kopyala-btn" disabled>Kopyala</button>
+      </div>
+
+      <output class="hash gizli" id="uretilen"></output>
+    </div>
+  </section>
+
+</main>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
