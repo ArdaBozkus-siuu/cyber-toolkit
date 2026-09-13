@@ -1,5 +1,9 @@
 # Cyber Toolkit
 
+[![tests](https://github.com/ardabozkus-siuu/cyber-toolkit/actions/workflows/tests.yml/badge.svg)](https://github.com/ardabozkus-siuu/cyber-toolkit/actions/workflows/tests.yml)
+
+**Live:** https://ardabozkus-siuu.github.io/cyber-toolkit/
+
 Small security tools that run entirely in the browser. No backend, no build step, no data
 leaving the device. Each tool has its own page with an explanation of the method next to a
 working demo.
@@ -57,6 +61,28 @@ anything.
   running a wordlist would actually find.
 - `tools.json` — the tool index. Adding a tool means creating a folder and appending one
   entry here.
+
+## Tests
+
+```bash
+npm test
+```
+
+35 tests, no dependencies — the project has none and the test suite keeps it that way.
+They run on every push via GitHub Actions.
+
+- **`tests/sha256.test.js`** checks the hash implementation against Node's `crypto` module:
+  empty input, the block-padding boundaries at 55/56/63/64/65 bytes, multi-byte UTF-8, 1 MB
+  of data, chunked feeding at an offset that doesn't align to the block size, and a 9.5 MB
+  Blob read through the 4 MB slicing path.
+- **`tests/entropy.test.js`** pins the scoring behaviour: common passwords score as very
+  weak, sequences and repeats are penalised, and `Galatasaray1907` stays under 40 bits even
+  though naive character-set entropy puts it above 80. It also verifies the generator
+  respects the requested length and character sets and never repeats across 200 runs.
+- **`tests/yapi.test.js`** catches the failure that browsers hide: renaming an element `id`
+  in the HTML without updating the JavaScript. It cross-checks every `getElementById` call
+  against the markup, verifies every local link and import resolves, and validates
+  `tools.json` against the folders on disk.
 
 ## Adding a tool
 

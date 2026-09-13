@@ -60,3 +60,16 @@ ilk beş hanesi gönderilir (k-anonimlik); eşleşme tarayıcıda aranır.
 2. JWT çözümleyici
 3. Güvenlik başlığı denetçisi (CORS nedeniyle küçük bir sunucu gerektirir)
 4. Tauri ile masaüstü paketi
+
+## Ek: test altyapısı (2026-09-13)
+
+Testler `tests/` altında, Node'un yerleşik test aracıyla çalışıyor. Bağımlılık eklenmedi;
+proje sıfır bağımlılık iddiasını test tarafında da koruyor. Her push'ta GitHub Actions
+`npm test` çalıştırıyor.
+
+Üç dosya: hash doğruluğu (Node crypto referansıyla), parola puanlama davranışı
+(özellikle sözlük kelimesi düzeltmesinin geri gelmemesi için) ve sayfa-kod tutarlılığı
+(HTML'deki id ile JS'teki referansın ayrışması tarayıcıda sessiz kalır, testte patlar).
+
+Doğrulama: `sizinti-btn` id'si bilerek değiştirildiğinde yapı testi düşüyor ve eksik
+id'yi dosya adıyla birlikte bildiriyor.
