@@ -15,6 +15,7 @@ const SAYFALAR = [
   { html: 'index.html', js: 'assets/js/home.js' },
   { html: 'tools/parola-sagligi/index.html', js: 'tools/parola-sagligi/app.js' },
   { html: 'tools/dosya-butunlugu/index.html', js: 'tools/dosya-butunlugu/app.js' },
+  { html: 'tools/log-analizi/index.html', js: 'tools/log-analizi/app.js' },
 ];
 
 const idleriTopla = (html) => new Set([...html.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]));

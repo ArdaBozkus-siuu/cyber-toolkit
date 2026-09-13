@@ -17,7 +17,7 @@ cihazdan çıkmıyor. Her aracın sayfasında solda yöntemin anlatımı, sağda
 | --- | --- | --- |
 | Parola Sağlığı | Entropy estimate, predictable-pattern detection, breach lookup, password generator | ready |
 | Dosya Bütünlüğü | SHA-256 hashing with snapshot comparison to detect changed, added and deleted files | ready |
-| Log Analizi | Flags repeated failed logins from the same address in SSH logs | planned |
+| Log Analizi | Groups SSH auth events by address, flags scanning behaviour and successful logins that follow a burst of failures | ready |
 | JWT Çözümleyici | Decodes claims, checks expiry, warns on unsafe signature algorithms | planned |
 
 ## Running locally
@@ -55,6 +55,10 @@ anything.
 - `assets/js/sha256.js` — streaming SHA-256, verified against Node's `crypto` module,
   including block-boundary cases and chunked input. Files are read in 4 MB slices so large
   files neither exhaust memory nor freeze the page.
+- `assets/js/log-analiz.js` — log parsing and scoring. sshd writes one failed attempt as
+  two lines (`Invalid user` then `Failed password for invalid user`), so attempts are
+  deduplicated by address, username and second — otherwise every scan reads as twice its
+  real size.
 - `assets/js/entropy.js` — password scoring. Character-set entropy alone overrates
   dictionary passwords, so a word found in the wordlist is counted as a single guess unit
   rather than a random string. `Galatasaray1907` scores as weak, which is what an attacker
@@ -79,6 +83,11 @@ They run on every push via GitHub Actions.
   weak, sequences and repeats are penalised, and `Galatasaray1907` stays under 40 bits even
   though naive character-set entropy puts it above 80. It also verifies the generator
   respects the requested length and character sets and never repeats across 200 runs.
+- **`tests/log-analiz.test.js`** covers the parser and the detection rules: both timestamp
+  formats, IPv6 addresses, the `invalid user` line whose username is easy to misparse, and
+  the deduplication of an attempt that sshd writes across two lines. It also pins the
+  severity rules — a burst followed by a successful login is critical, a user mistyping a
+  password once is not.
 - **`tests/yapi.test.js`** catches the failure that browsers hide: renaming an element `id`
   in the HTML without updating the JavaScript. It cross-checks every `getElementById` call
   against the markup, verifies every local link and import resolves, and validates

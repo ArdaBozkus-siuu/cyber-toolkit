@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Log Analizi — Siber Araç Kutusu</title>
+<meta name="description" content="SSH kayıtlarında arka arkaya başarısız girişleri ve tutan saldırıları bulur. Log dosyası cihazdan çıkmaz.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/app.css">
+</head>
+<body>
+
+<header class="ust">
+  <div class="ust-ic">
+    <a href="../../">Siber Araç Kutusu</a>
+    <span class="ust-yol">Log Analizi</span>
+  </div>
+</header>
+
+<main class="kabuk arac-duzen">
+
+  <section class="aciklama">
+    <h1>Log Analizi</h1>
+    <p>
+      SSH kimlik doğrulama kayıtlarını okur, denemeleri adrese göre toplar ve
+      arka arkaya başarısız girişlerle karakterize olan tarama davranışını işaretler.
+    </p>
+
+    <h3>Neye bakıyor</h3>
+    <p>
+      İnternete açık her sunucu sürekli otomatik tarama alır; auth.log dosyasında binlerce
+      başarısız satır görmek tek başına olağandışı değildir. Anlamlı olan, o denemelerin
+      nasıl dağıldığıdır: tek bir adresten saniyeler içinde onlarca farklı kullanıcı adı
+      denenmesi bir tarama botudur, aynı kullanıcıya dakikalarca sabit aralıklarla parola
+      denenmesi ise hedefli bir saldırıdır.
+    </p>
+
+    <h3>Asıl aranan şey</h3>
+    <p>
+      Bir adresten onlarca başarısız denemenin ardından <em>başarılı</em> bir giriş
+      gelmesi. Bu, saldırının tuttuğu anlamına gelir ve logda göze çarpmayan tek bir
+      satırdır — yüzlerce hata satırının arasında kaybolur. Araç bu durumu ayrı bir
+      seviyede, kritik olarak işaretler.
+    </p>
+
+    <h3>Okunan satırlar</h3>
+    <ul>
+      <li><span class="hash">Failed password for ...</span> — parola denemesi tutmadı</li>
+      <li><span class="hash">Invalid user ...</span> — sistemde olmayan bir kullanıcı denendi</li>
+      <li><span class="hash">Accepted password/publickey for ...</span> — giriş başarılı</li>
+    </ul>
+    <p>
+      Hem klasik syslog zaman biçimi (<span class="hash">Sep 13 18:22:01</span>) hem ISO
+      tarihli satırlar okunur. Tanınmayan satırlar sessizce atlanır.
+    </p>
+
+    <h3>Sınırları</h3>
+    <ul>
+      <li>Tek seferlik bir bakıştır; canlı izleme yapmaz, kimseyi engellemez.</li>
+      <li>Parolayı zaten bilen biri ilk denemede girerse burada normal görünür — bu araç tekrar eden başarısızlığı arar.</li>
+      <li>Eşiği düşürmek yanlış alarmı artırır: elini yanlış yazan kullanıcılar da listeye düşer. Varsayılan 10, kendi sunucunun gürültüsüne göre ayarla.</li>
+      <li>Adresler olduğu gibi gösterilir; coğrafi konum veya itibar sorgusu yapılmaz, çünkü bu dışarıya istek göndermeyi gerektirirdi.</li>
+    </ul>
+  </section>
+
+  <section>
+    <div class="panel">
+      <h2>Log dosyası</h2>
+      <div class="birakma-alani" id="birakma" tabindex="0" role="button"
+           aria-label="Log dosyası seçmek için tıkla veya dosyayı buraya bırak">
+        <p>auth.log dosyasını buraya bırak ya da seçmek için tıkla</p>
+      </div>
+      <input type="file" id="dosya-girdi" accept=".log,.txt,text/plain" class="gizli">
+
+      <label for="metin" style="margin-top:1rem">Ya da kayıtları yapıştır</label>
+      <textarea id="metin" spellcheck="false" rows="6"
+                placeholder="Sep 13 05:02:08 sunucu sshd[2415]: Failed password for root from 203.0.113.9 port 40122 ssh2"></textarea>
+
+      <div class="secenekler">
+        <label for="esik">Şüpheli sayma eşiği</label>
+        <input type="number" id="esik" value="10" min="2" max="500" style="width:5rem">
+        <span style="color:var(--slate);font-size:0.9rem">başarısız deneme</span>
+      </div>
+
+      <div class="dugme-sirasi">
+        <button type="button" id="analiz-btn">Kayıtları çözümle</button>
+        <button type="button" class="ikincil" id="ornek-btn">Örnek log yükle</button>
+        <button type="button" class="ikincil" id="temizle-btn">Temizle</button>
+      </div>
+
+      <p id="durum-yazi" class="gizli"></p>
+    </div>
+
+    <div class="panel gizli" id="sonuc-panel">
+      <h2>Bulgular</h2>
+      <dl class="veri-listesi" id="ozet"></dl>
+
+      <h3 style="margin-top:1.5rem;font-size:0.95rem">Başarısız denemelerin saatlere dağılımı</h3>
+      <div class="histogram" id="histogram" role="img" aria-label="Saatlere göre başarısız deneme dağılımı"></div>
+
+      <table class="dosya-tablo" id="tablo">
+        <thead>
+          <tr><th>Adres</th><th>Denemeler</th><th>Değerlendirme</th></tr>
+        </thead>
+        <tbody id="tablo-govde"></tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>

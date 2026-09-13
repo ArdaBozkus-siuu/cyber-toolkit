@@ -14,8 +14,8 @@
   {
     "ad": "Log Analizi",
     "yol": "tools/log-analizi/",
-    "ozet": "SSH kayıtlarını okuyup aynı adresten gelen arka arkaya başarısız girişleri işaretler.",
-    "durum": "yakinda"
+    "ozet": "SSH kayıtlarını okur, aynı adresten gelen arka arkaya başarısız girişleri ve ardından tutan saldırıları işaretler.",
+    "durum": "hazir"
   },
   {
     "ad": "JWT Çözümleyici",

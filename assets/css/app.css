@@ -344,3 +344,34 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 }
 
 .gizli { display: none; }
+
+/* --- Saat dağılımı çubukları ---------------------------------------------- */
+
+.histogram {
+  display: grid;
+  grid-template-columns: repeat(24, 1fr);
+  align-items: end;
+  gap: 2px;
+  height: 90px;
+  margin: 0.75rem 0 1.5rem;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 1.25rem;
+  position: relative;
+}
+
+.histogram-sutun {
+  height: var(--oran, 0%);
+  min-height: 1px;
+  background: var(--baglanti);
+  border-radius: 1px 1px 0 0;
+}
+
+/* Çubuğun altına 6 saatte bir etiket düşer. */
+.histogram-sutun[data-saat]::after {
+  content: attr(data-saat);
+  position: absolute;
+  bottom: 0;
+  font-size: 0.7rem;
+  color: var(--slate);
+  transform: translateX(-25%);
+}

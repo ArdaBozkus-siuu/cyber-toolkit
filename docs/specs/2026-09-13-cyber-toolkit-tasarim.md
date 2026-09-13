@@ -73,3 +73,18 @@ proje sıfır bağımlılık iddiasını test tarafında da koruyor. Her push'ta
 
 Doğrulama: `sizinti-btn` id'si bilerek değiştirildiğinde yapı testi düşüyor ve eksik
 id'yi dosya adıyla birlikte bildiriyor.
+
+## Ek: log analizi aracı (2026-09-13)
+
+Girdi üç yoldan gelir: dosya sürükleme, metin yapıştırma ve gömülü örnek log. Örnek log
+elle yazıldı (gerçek sunucu kaydı değil) ve üç senaryo içeriyor: kullanıcı adı taraması,
+parola saldırısı ve sonunda tutan bir giriş.
+
+Seviyeler: eşiği aşan başarısız deneme veya beşten fazla farklı kullanıcı adı "şüpheli";
+eşiği aşan denemelerin ardından başarılı giriş "kritik". Kritik olan asıl aranan şey,
+çünkü logda tek bir satırdır ve yüzlerce hata satırının arasında kaybolur.
+
+Geliştirme sırasında çıkan hata: sshd bir denemeyi iki satıra yazdığı için tarama
+boyutları ikiye katlanıyordu (12 deneme 24 görünüyordu). Adres + kullanıcı + saniye
+anahtarıyla tekilleştirildi, testle sabitlendi. Özet kutusundaki toplam da ham satır
+sayısından değil tekilleştirilmiş kayıtlardan hesaplanıyor.
