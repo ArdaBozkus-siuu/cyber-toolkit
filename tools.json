@@ -3,24 +3,28 @@
     "ad": "Parola Sağlığı",
     "yol": "tools/parola-sagligi/",
     "ozet": "Bir parolanın kaç bit entropi taşıdığını, tahmin edilebilir kalıp içerip içermediğini ve bilinen sızıntılarda geçip geçmediğini gösterir.",
-    "durum": "hazir"
+    "durum": "hazir",
+    "ikon": "parola"
   },
   {
     "ad": "Dosya Bütünlüğü",
     "yol": "tools/dosya-butunlugu/",
     "ozet": "Dosyaların SHA-256 özetini alır, kaydedilmiş bir anlık görüntüyle karşılaştırarak değişen, eklenen ve silinen dosyaları bulur.",
-    "durum": "hazir"
+    "durum": "hazir",
+    "ikon": "dosya"
   },
   {
     "ad": "Log Analizi",
     "yol": "tools/log-analizi/",
     "ozet": "SSH kayıtlarını okur, aynı adresten gelen arka arkaya başarısız girişleri ve ardından tutan saldırıları işaretler.",
-    "durum": "hazir"
+    "durum": "hazir",
+    "ikon": "log"
   },
   {
     "ad": "JWT Çözümleyici",
     "yol": "tools/jwt/",
     "ozet": "Bir token'ın içindeki alanları açar, süresini kontrol eder, imza algoritmasındaki tehlikeli seçimleri uyarır.",
-    "durum": "yakinda"
+    "durum": "yakinda",
+    "ikon": "jwt"
   }
 ]

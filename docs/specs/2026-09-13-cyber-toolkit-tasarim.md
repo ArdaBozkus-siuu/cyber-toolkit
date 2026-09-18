@@ -88,3 +88,20 @@ Geliştirme sırasında çıkan hata: sshd bir denemeyi iki satıra yazdığı i
 boyutları ikiye katlanıyordu (12 deneme 24 görünüyordu). Adres + kullanıcı + saniye
 anahtarıyla tekilleştirildi, testle sabitlendi. Özet kutusundaki toplam da ham satır
 sayısından değil tekilleştirilmiş kayıtlardan hesaplanıyor.
+
+## Ek: görsel tur (2026-09-13)
+
+Eklenenler: marka işareti (beş bölmeli ölçek — parola ölçerinin motifiyle aynı),
+favicon, koyu tema, araçlara özel elle çizilmiş SVG ikonlar, araç sayfalarının altında
+diğer araçlara geçiş, ana sayfada ölçek çizgisi ve kendi 404 sayfamız.
+
+Koyu tema renkleri açık temadan otomatik türetilmedi; koyu zeminde aynı doygunluktaki
+durum renkleri okunmadığı için ayrı ayrı seçildi. Tema `<head>` içindeki küçük bir
+betikle ilk boyamadan önce uygulanıyor, yoksa koyu temada sayfa bir an beyaz yanıp
+sönüyor. Bu davranış testle sabitlendi.
+
+matchMedia guard'ı eklendi: eski Safari'de `addEventListener` yerine `addListener` var,
+korumasız bırakılırsa tema düğmesi tamamen kırılıyordu.
+
+Geçiş listesi tools.json'dan üretiliyor; bulunduğu sayfayı ve "yakında" durumundaki
+araçları dışarıda bırakıyor.

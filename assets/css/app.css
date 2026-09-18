@@ -29,6 +29,59 @@
 
   --olcek: 1.5rem;
   --kenar: 3px;
+
+  color-scheme: light;
+}
+
+/* Koyu tema. Kullanıcı seçim yapmadıysa sistem tercihi, yaptıysa data-tema geçerli.
+   Renkler açık temadan türetilmedi; koyu zeminde doygunluk düşürülüp parlaklık
+   yükseltilmezse durum renkleri okunmuyor. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-tema="acik"]) {
+    --paper: #11171d;
+    --panel: #181f27;
+    --panel-alt: #1e2630;
+    --ink: #e4ebf2;
+    --slate: #9aabbb;
+    --line: #2f3b47;
+    --line-soft: #242e39;
+
+    --guvenli: #45c2a3;
+    --dikkat: #dda63f;
+    --riskli: #ec7d88;
+    --baglanti: #7cb1ea;
+
+    --olcu-1: #ec7d88;
+    --olcu-2: #e09266;
+    --olcu-3: #dda63f;
+    --olcu-4: #79b982;
+    --olcu-5: #45c2a3;
+
+    color-scheme: dark;
+  }
+}
+
+:root[data-tema="koyu"] {
+  --paper: #11171d;
+  --panel: #181f27;
+  --panel-alt: #1e2630;
+  --ink: #e4ebf2;
+  --slate: #9aabbb;
+  --line: #2f3b47;
+  --line-soft: #242e39;
+
+  --guvenli: #45c2a3;
+  --dikkat: #dda63f;
+  --riskli: #ec7d88;
+  --baglanti: #7cb1ea;
+
+  --olcu-1: #ec7d88;
+  --olcu-2: #e09266;
+  --olcu-3: #dda63f;
+  --olcu-4: #79b982;
+  --olcu-5: #45c2a3;
+
+  color-scheme: dark;
 }
 
 *,
@@ -198,12 +251,12 @@ input[type="range"] { width: 100%; accent-color: var(--baglanti); }
 
 button {
   font-family: var(--govde);
+  color: var(--panel);
   font-size: 0.9rem;
   font-weight: 600;
   padding: 0.55rem 0.9rem;
   border: 1px solid var(--baglanti);
   background: var(--baglanti);
-  color: #fff;
   border-radius: 2px;
   cursor: pointer;
 }
@@ -282,12 +335,19 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 .hash {
   font-family: var(--veri);
   font-size: 0.85rem;
-  word-break: break-all;
   background: var(--panel-alt);
-  padding: 0.5rem 0.6rem;
   border: 1px solid var(--line-soft);
   border-radius: 2px;
+  /* Cümle içinde geçen kod parçaları satırı bölmemeli. */
+  display: inline;
+  padding: 0.05rem 0.3rem;
+  overflow-wrap: break-word;
+}
+
+.hash-blok {
   display: block;
+  padding: 0.5rem 0.6rem;
+  word-break: break-all;
 }
 
 /* --- Dosya bırakma alanı -------------------------------------------------- */
@@ -327,6 +387,12 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 }
 .dosya-tablo td { padding: 0.55rem 0.5rem 0.55rem 0; border-bottom: 1px solid var(--line-soft); vertical-align: top; }
 .dosya-tablo .ozet { font-family: var(--veri); font-size: 0.78rem; word-break: break-all; color: var(--slate); }
+.dosya-tablo .adres { font-family: var(--veri); font-size: 0.82rem; white-space: nowrap; }
+
+@media (max-width: 520px) {
+  /* Dar ekranda taşmaktansa bölünmesi yeğdir. */
+  .dosya-tablo .adres { white-space: normal; overflow-wrap: anywhere; }
+}
 .dosya-tablo .sonuc { white-space: nowrap; font-weight: 600; }
 .sonuc-ayni { color: var(--guvenli); }
 .sonuc-degisti { color: var(--riskli); }
@@ -374,4 +440,123 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
   font-size: 0.7rem;
   color: var(--slate);
   transform: translateX(-25%);
+}
+
+/* --- Marka ve tema düğmesi ------------------------------------------------ */
+
+.marka {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.marka-isaret {
+  width: 26px;
+  height: 19px;
+  color: var(--baglanti);
+  flex: none;
+}
+
+.tema-btn {
+  margin-left: auto;
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--slate);
+  padding: 0.35rem;
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tema-btn svg { width: 17px; height: 17px; }
+.tema-btn:hover { color: var(--ink); border-color: var(--slate); }
+
+/* --- Ana sayfa: ölçek çizgisi --------------------------------------------- */
+
+.olcek-cizgi {
+  display: block;
+  width: 100%;
+  max-width: 420px;
+  height: 22px;
+  margin: 1.75rem 0 1.25rem;
+  color: var(--line);
+}
+
+/* --- Araç satırlarındaki ikonlar ------------------------------------------ */
+
+.satir { grid-template-columns: auto minmax(0, 1fr) auto; }
+
+.satir-ikon {
+  width: 34px;
+  height: 34px;
+  color: var(--baglanti);
+  margin-top: 0.15rem;
+  flex: none;
+}
+
+.satir-ikon svg { width: 100%; height: 100%; }
+.satir-pasif .satir-ikon { color: var(--line); }
+
+/* --- Araç sayfası altındaki geçiş listesi --------------------------------- */
+
+.gecis {
+  border-top: 1px solid var(--line);
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+}
+
+.gecis h2 { font-size: 1rem; color: var(--slate); margin-bottom: 1rem; }
+
+.gecis-listesi {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 0.75rem;
+}
+
+.gecis-listesi a {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  padding: 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: var(--panel);
+  text-decoration: none;
+  color: var(--ink);
+  height: 100%;
+}
+
+.gecis-listesi a:hover { border-color: var(--baglanti); }
+.gecis-listesi strong { display: block; font-size: 0.95rem; margin-bottom: 0.2rem; }
+
+.gecis-ikon { width: 26px; height: 26px; color: var(--baglanti); flex: none; }
+.gecis-ikon svg { width: 100%; height: 100%; }
+
+.gecis-ozet {
+  font-size: 0.85rem;
+  color: var(--slate);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* --- 404 ------------------------------------------------------------------ */
+
+.bulunamadi {
+  padding: 4rem 0 2rem;
+  max-width: 60ch;
+}
+
+.bulunamadi .kod {
+  font-family: var(--veri);
+  font-size: 3.5rem;
+  color: var(--line);
+  line-height: 1;
+  margin-bottom: 0.75rem;
 }

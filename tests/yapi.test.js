@@ -91,3 +91,46 @@ test('sayfalar Türkçe dil etiketiyle ve utf-8 ile işaretli', () => {
     assert.match(html, /name="viewport"/, 'mobil görünüm için viewport etiketi gerekli');
   }
 });
+
+test('her sayfada favicon, marka ve tema düğmesi var', () => {
+  for (const sayfa of SAYFALAR) {
+    const html = oku(sayfa.html);
+    assert.match(html, /rel="icon"/, `${sayfa.html} içinde favicon bağlantısı yok`);
+    assert.match(html, /class="marka"/, `${sayfa.html} içinde marka bağlantısı yok`);
+    assert.match(html, /id="tema-btn"/, `${sayfa.html} içinde tema düğmesi yok`);
+  }
+});
+
+test('tema betiği ilk boyamadan önce çalışacak şekilde head içinde', () => {
+  for (const sayfa of SAYFALAR) {
+    const html = oku(sayfa.html);
+    const headSonu = html.indexOf('</head>');
+    const betik = html.indexOf("localStorage.getItem('tema')");
+    assert.ok(betik > 0, `${sayfa.html} içinde tema betiği yok`);
+    assert.ok(betik < headSonu, `${sayfa.html} içinde tema betiği head dışında — sayfa bir an yanlış temada yanıp söner`);
+  }
+});
+
+test('araç sayfalarında diğer araçlara geçiş bölümü var', () => {
+  for (const sayfa of SAYFALAR.slice(1)) {
+    const html = oku(sayfa.html);
+    assert.match(html, /id="diger-araclar"/, `${sayfa.html} içinde geçiş bölümü yok`);
+    assert.match(html, /arac-gezinme\.js/, `${sayfa.html} geçiş betiğini yüklemiyor`);
+  }
+});
+
+test('her araç kaydında tanımlı bir ikon var', async () => {
+  const { IKONLAR } = await import('../assets/js/ikonlar.js');
+  for (const arac of JSON.parse(oku('tools.json'))) {
+    assert.ok(arac.ikon, `${arac.ad} için ikon alanı yok`);
+    assert.ok(arac.ikon in IKONLAR, `${arac.ad} tanımsız ikon kullanıyor: ${arac.ikon}`);
+  }
+});
+
+test('favicon ve 404 sayfası yerinde', () => {
+  assert.ok(fs.existsSync(path.join(kok, 'favicon.svg')));
+  const html = oku('404.html');
+  assert.match(html, /<html lang="tr">/);
+  // GitHub Pages alt dizinde yayınladığı için 404 mutlak yol kullanmak zorunda.
+  assert.match(html, /href="\/cyber-toolkit\//, '404 sayfası mutlak yol kullanmalı');
+});

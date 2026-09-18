@@ -135,7 +135,7 @@ function tabloCiz(adresler) {
     const tr = document.createElement('tr');
 
     const ipHucre = document.createElement('td');
-    ipHucre.className = 'ozet';
+    ipHucre.className = 'adres';
     ipHucre.textContent = adres.ip;
 
     const sayiHucre = document.createElement('td');

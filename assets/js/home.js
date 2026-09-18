@@ -1,6 +1,8 @@
 // Ana sayfadaki araç listesini tools.json dosyasından üretir.
 // Yeni araç eklemek için: klasörü aç, tools.json'a bir kayıt ekle. Başka yer değişmez.
 
+import { ikonAl } from './ikonlar.js';
+
 const liste = document.getElementById('arac-listesi');
 
 const DURUM_YAZI = {
@@ -12,6 +14,10 @@ function satirOlustur(arac) {
   const li = document.createElement('li');
   const hazir = arac.durum === 'hazir';
   li.className = hazir ? 'satir' : 'satir satir-pasif';
+
+  const ikon = document.createElement('div');
+  ikon.className = 'satir-ikon';
+  ikon.innerHTML = ikonAl(arac.ikon);
 
   const sol = document.createElement('div');
   const baslik = document.createElement('h2');
@@ -34,7 +40,7 @@ function satirOlustur(arac) {
   etiket.className = `durum ${durum.sinif}`;
   etiket.textContent = durum.yazi;
 
-  li.append(sol, etiket);
+  li.append(ikon, sol, etiket);
   return li;
 }
 
@@ -50,6 +56,7 @@ async function yukle() {
     const li = document.createElement('li');
     li.className = 'satir';
     li.innerHTML = `
+      <div class="satir-ikon"></div>
       <div>
         <h2>Araç listesi yüklenemedi</h2>
         <p>Sayfayı dosyaya çift tıklayarak açtıysan tarayıcı <code>tools.json</code> dosyasını

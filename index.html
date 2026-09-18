@@ -8,14 +8,26 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="assets/css/app.css">
+<script>
+  // Temayı ilk boyamadan önce uygula, yoksa koyu temada bir an beyaz yanıp söner.
+  (() => { try { const t = localStorage.getItem('tema'); if (t) document.documentElement.dataset.tema = t; } catch {} })();
+</script>
 </head>
 <body>
 
 <header class="ust">
   <div class="ust-ic">
-    <a href="./">Siber Araç Kutusu</a>
+    <a class="marka" href="./"><svg viewBox="0 0 28 20" aria-hidden="true" focusable="false" class="marka-isaret">
+        <rect x="0.5" y="6" width="4" height="8" rx="1" fill="currentColor"/>
+        <rect x="6" y="4" width="4" height="12" rx="1" fill="currentColor"/>
+        <rect x="11.5" y="2" width="4" height="16" rx="1" fill="currentColor"/>
+        <rect x="17" y="4" width="4" height="12" rx="1" fill="currentColor" opacity="0.45"/>
+        <rect x="22.5" y="6" width="4" height="8" rx="1" fill="none" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
+      </svg> Siber Araç Kutusu</a>
     <span class="ust-yol">tarayıcıda çalışan güvenlik araçları</span>
+    <button type="button" id="tema-btn" class="tema-btn" aria-label="Koyu temaya geç"></button>
   </div>
 </header>
 
@@ -29,6 +41,12 @@
       yapıştırdığın metin cihazından çıkmıyor — hesaplamanın tamamı bu sayfanın içinde,
       senin tarayıcında yapılıyor.
     </p>
+    <svg class="olcek-cizgi" viewBox="0 0 420 22" aria-hidden="true" focusable="false">
+      <g stroke="currentColor" stroke-width="1">
+        <path d="M0 21h420"/>
+        <path d="M0.5 21V7M42 21v-5M84 21v-5M126 21v-5M168 21v-5M210 21V7M252 21v-5M294 21v-5M336 21v-5M378 21v-5M419.5 21V7"/>
+      </g>
+    </svg>
     <p class="rozet">Sunucu yok, kayıt yok, veri yüklenmiyor</p>
   </section>
 
@@ -46,5 +64,6 @@
 </main>
 
 <script type="module" src="assets/js/home.js"></script>
+<script type="module" src="assets/js/tema.js"></script>
 </body>
 </html>

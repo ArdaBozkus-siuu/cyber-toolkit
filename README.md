@@ -46,6 +46,17 @@ the password's SHA-1 digest is computed locally and only its **first five charac
 sent. The service returns every digest sharing that prefix and the match is done in the
 browser. Neither the password nor its full digest leaves the device.
 
+## Interface
+
+Light and dark themes follow the operating system by default; the toggle in the header
+overrides that and the choice is remembered. The theme is applied by a small inline script
+in `<head>` so the page never flashes the wrong colours before the stylesheet loads.
+
+Colour carries meaning rather than decoration: the three status colours (safe, warning,
+risk) are the same across every tool, so a red bar on the password meter and a red row in
+the log table mean the same kind of thing. Tool icons are hand-drawn SVGs rather than an
+icon library — each one depicts what its tool measures.
+
 ## How it is built
 
 Plain HTML, CSS and JavaScript. No framework and no dependencies, so the same files can
