@@ -23,8 +23,8 @@
   {
     "ad": "JWT Çözümleyici",
     "yol": "tools/jwt/",
-    "ozet": "Bir token'ın içindeki alanları açar, süresini kontrol eder, imza algoritmasındaki tehlikeli seçimleri uyarır.",
-    "durum": "yakinda",
+    "ozet": "Bir token'ın içindeki alanları açar, süresini kontrol eder, imzasız token ve veri bölümüne konmuş hassas bilgi gibi riskleri işaretler.",
+    "durum": "hazir",
     "ikon": "jwt"
   }
 ]

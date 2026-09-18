@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JWT Çözümleyici — Siber Araç Kutusu</title>
+<meta name="description" content="JWT içeriğini açar, süresini ve riskli seçimleri denetler. Token cihazdan çıkmaz.">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/app.css">
+<script>
+  // Temayı ilk boyamadan önce uygula, yoksa koyu temada bir an beyaz yanıp söner.
+  (() => { try { const t = localStorage.getItem('tema'); if (t) document.documentElement.dataset.tema = t; } catch {} })();
+</script>
+</head>
+<body>
+
+<header class="ust">
+  <div class="ust-ic">
+    <a class="marka" href="../../"><svg viewBox="0 0 28 20" aria-hidden="true" focusable="false" class="marka-isaret">
+        <rect x="0.5" y="6" width="4" height="8" rx="1" fill="currentColor"/>
+        <rect x="6" y="4" width="4" height="12" rx="1" fill="currentColor"/>
+        <rect x="11.5" y="2" width="4" height="16" rx="1" fill="currentColor"/>
+        <rect x="17" y="4" width="4" height="12" rx="1" fill="currentColor" opacity="0.45"/>
+        <rect x="22.5" y="6" width="4" height="8" rx="1" fill="none" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
+      </svg> Siber Araç Kutusu</a>
+    <span class="ust-yol">JWT Çözümleyici</span>
+    <button type="button" id="tema-btn" class="tema-btn" aria-label="Koyu temaya geç"></button>
+  </div>
+</header>
+
+<main class="kabuk arac-duzen">
+
+  <section class="aciklama">
+    <h1>JWT Çözümleyici</h1>
+    <p>
+      Bir JSON Web Token'ın içindeki alanları açar, zaman alanlarını okunur hale getirir
+      ve token'daki riskli seçimleri işaretler.
+    </p>
+
+    <h3>Token neyden oluşur</h3>
+    <p>
+      Nokta ile ayrılmış üç bölüm: başlık, veri ve imza. İlk ikisi base64url ile
+      <em>kodlanmış</em> JSON'dur — şifrelenmiş değil. Bu ayrım önemli: kodlama gizlilik
+      sağlamaz, sadece metni aktarıma uygun hale getirir. Token'ı eline geçiren herkes
+      içindekileri okuyabilir.
+    </p>
+
+    <h3>İmza ne işe yarar</h3>
+    <p>
+      İmza, içeriğin değiştirilmediğini kanıtlar; içeriği gizlemez. Sunucu token'ı aldığında
+      imzayı kendi anahtarıyla yeniden hesaplar, tutmazsa reddeder. Bu yüzden veri bölümünü
+      elle değiştirip geçerli bir token elde edemezsin — imzayı yeniden üretemediğin sürece.
+    </p>
+
+    <h3>Bu araç imzayı doğrulamaz</h3>
+    <p>
+      Doğrulama, gizli anahtarı ya da açık anahtarı bilmeyi gerektirir. Gizli anahtarını bir
+      web sayfasına yapıştırmak baştan kötü bir fikirdir — o yüzden burada böyle bir alan yok.
+      Araç sana token'ın <em>ne söylediğini</em> gösterir, <em>doğru söyleyip söylemediğini</em> değil.
+    </p>
+
+    <h3>Neye bakıyor</h3>
+    <ul>
+      <li><span class="hash">alg: none</span> — imzasız token. Sunucu bunu kabul ediyorsa isteyen istediği içeriği yazabilir; JWT kütüphanelerinin klasik açığıdır.</li>
+      <li>Süresi dolmuş ya da hiç son kullanma tarihi olmayan token.</li>
+      <li>Aylarca geçerli kalan token: çalınırsa saldırganın elinde uzun süre çalışır.</li>
+      <li>Veri bölümüne konmuş parola, kart ya da kimlik bilgisi.</li>
+    </ul>
+
+    <h3>Sınırları</h3>
+    <ul>
+      <li>İmza doğrulanmaz; "geçerli" ifadesi yalnızca biçimin doğru olduğunu anlatır.</li>
+      <li>Beş bölümlü JWE token'ları şifrelidir, anahtarsız okunamaz.</li>
+      <li>Zaman alanları senin cihazının saatine göre yorumlanır.</li>
+    </ul>
+  </section>
+
+  <section>
+    <div class="panel">
+      <label for="token">Token</label>
+      <textarea id="token" rows="5" spellcheck="false" autocapitalize="off"
+                placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0In0.imza"></textarea>
+
+      <div class="dugme-sirasi">
+        <button type="button" class="ikincil" id="ornek-btn">Örnek token</button>
+        <button type="button" class="ikincil" id="riskli-btn">Sorunlu token</button>
+        <button type="button" class="ikincil" id="temizle-btn">Temizle</button>
+      </div>
+
+      <p id="durum-yazi" class="gizli"></p>
+    </div>
+
+    <div class="panel gizli" id="sonuc-panel">
+      <h2>Bulgular</h2>
+      <ul class="not-listesi" id="bulgular"></ul>
+
+      <h3 style="margin-top:1.5rem;font-size:0.95rem">Zaman alanları</h3>
+      <dl class="veri-listesi" id="zamanlar"></dl>
+
+      <h3 style="margin-top:1.5rem;font-size:0.95rem">Başlık</h3>
+      <pre class="hash hash-blok" id="baslik-json"></pre>
+
+      <h3 style="margin-top:1.5rem;font-size:0.95rem">Veri</h3>
+      <pre class="hash hash-blok" id="veri-json"></pre>
+
+      <dl class="veri-listesi" id="alan-sozlugu"></dl>
+    </div>
+  </section>
+
+</main>
+
+  <section class="gecis" id="diger-araclar"></section>
+
+<script type="module" src="app.js"></script>
+<script type="module" src="../../assets/js/tema.js"></script>
+<script type="module" src="../../assets/js/arac-gezinme.js"></script>
+</body>
+</html>

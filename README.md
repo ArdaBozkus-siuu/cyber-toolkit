@@ -18,7 +18,7 @@ cihazdan çıkmıyor. Her aracın sayfasında solda yöntemin anlatımı, sağda
 | Parola Sağlığı | Entropy estimate, predictable-pattern detection, breach lookup, password generator | ready |
 | Dosya Bütünlüğü | SHA-256 hashing with snapshot comparison to detect changed, added and deleted files | ready |
 | Log Analizi | Groups SSH auth events by address, flags scanning behaviour and successful logins that follow a burst of failures | ready |
-| JWT Çözümleyici | Decodes claims, checks expiry, warns on unsafe signature algorithms | planned |
+| JWT Çözümleyici | Decodes claims, explains standard fields, checks expiry and flags unsigned tokens or secrets placed in the payload | ready |
 
 ## Running locally
 
@@ -66,6 +66,9 @@ anything.
 - `assets/js/sha256.js` — streaming SHA-256, verified against Node's `crypto` module,
   including block-boundary cases and chunked input. Files are read in 4 MB slices so large
   files neither exhaust memory nor freeze the page.
+- `assets/js/jwt.js` — token decoding and auditing. It deliberately has no signature
+  verification: that needs the signing key, and asking anyone to paste a private key into a
+  web page would be the wrong lesson to teach.
 - `assets/js/log-analiz.js` — log parsing and scoring. sshd writes one failed attempt as
   two lines (`Invalid user` then `Failed password for invalid user`), so attempts are
   deduplicated by address, username and second — otherwise every scan reads as twice its
@@ -99,6 +102,10 @@ They run on every push via GitHub Actions.
   the deduplication of an attempt that sshd writes across two lines. It also pins the
   severity rules — a burst followed by a successful login is critical, a user mistyping a
   password once is not.
+- **`tests/jwt.test.js`** covers decoding (base64url without padding, UTF-8 payloads,
+  `Bearer` prefixes) and the audit rules: `alg: none` in any casing, missing or past `exp`,
+  tokens valid for months, and sensitive-looking claim names. Malformed input must return an
+  explanation rather than throw, since a half-typed token is normal while the user types.
 - **`tests/yapi.test.js`** catches the failure that browsers hide: renaming an element `id`
   in the HTML without updating the JavaScript. It cross-checks every `getElementById` call
   against the markup, verifies every local link and import resolves, and validates

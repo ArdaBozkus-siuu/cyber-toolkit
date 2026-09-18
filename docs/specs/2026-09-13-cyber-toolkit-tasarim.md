@@ -105,3 +105,20 @@ korumasız bırakılırsa tema düğmesi tamamen kırılıyordu.
 
 Geçiş listesi tools.json'dan üretiliyor; bulunduğu sayfayı ve "yakında" durumundaki
 araçları dışarıda bırakıyor.
+
+## Ek: JWT çözümleyici (2026-09-18)
+
+İmza bilerek doğrulanmıyor. Doğrulama anahtar gerektirir; "gizli anahtarını şu kutuya
+yapıştır" demek, aracın öğretmeye çalıştığı şeyin tam tersi olurdu. Araç token'ın ne
+söylediğini gösterir, doğru söyleyip söylemediğini değil — bu ayrım sayfada da yazıyor.
+
+Denetlenen noktalar: alg "none" (her yazımıyla), eksik ya da geçmiş exp, aylarca geçerli
+kalan token, gelecekteki nbf/iat, veri bölümüne konmuş parola/kart/kimlik alanları, iss ve
+aud yokluğu. Bulgular önem sırasına dizilir.
+
+İki örnek token düğmesi var: biri sağlıklı, biri sorunlu. Zaman alanları o anki saate göre
+üretiliyor, böylece "süresi dolmuş" örneği bayatlamıyor.
+
+Not: jsdom'un btoa uygulaması Latin-1 dizgilerde hata veriyor, aynı veri Node ve gerçek
+tarayıcılarda sorunsuz kodlanıyor. Test düzeneği buna göre ayarlandı; site kodunda
+değişiklik gerekmedi.
